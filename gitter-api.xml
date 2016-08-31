@@ -1,0 +1,33 @@
+<application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:apigee="http://api.apigee.com/wadl/2010/07/"
+             xmlns="http://wadl.dev.java.net/2009/02"
+             xsi:schemaLocation="http://wadl.dev.java.net/2009/02 http://apigee.com/schemas/wadl-schema.xsd http://api.apigee.com/wadl/2010/07/ http://apigee.com/schemas/apigee-wadl-extensions.xsd">
+
+    <!-- Base defines the domain and base path of the endpoint -->
+    <resources base="https://api.gitter.im/v1">
+
+        <!-- A simple resource with a GET method -->
+        <resource path="/user/me">
+            <!-- Resources that are the same but have multiple verbs can have multiple method items in the WADL. -->
+            <!-- Methods should each have a unique id. -->
+            <!-- The attribute displayName can be used to control the name that appears in the list in the Console. -->
+            <method id="self-info-brief" name="GET" apigee:displayName="Self Info">
+
+                <!-- Tags are used to organize the list of methods. Primary tag will list the default placement. -->
+                <apigee:tags>
+                    <apigee:tag primary="true">User</apigee:tag>
+                </apigee:tags>
+
+                <!-- Is authentication required for this method? -->
+                <apigee:authentication required="true"/>
+
+                <!-- The content of the doc element is shown as a tooltip in the Console's method list. -->
+                <doc apigee:url="https://developer.gitter.im/docs/user-resource">
+                    Get information about current authenticated user.
+                </doc>
+            </method>
+        </resource>
+    </resources>
+
+</application>
