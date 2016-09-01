@@ -4,19 +4,17 @@
              xmlns="http://wadl.dev.java.net/2009/02"
              xsi:schemaLocation="http://wadl.dev.java.net/2009/02 http://apigee.com/schemas/wadl-schema.xsd http://api.apigee.com/wadl/2010/07/ http://apigee.com/schemas/apigee-wadl-extensions.xsd">
 
-    <!-- Base defines the domain and base path of the endpoint -->
     <resources base="https://api.gitter.im/v1">
 
-        <!-- A simple resource with a GET method -->
         <resource path="/user/me">
             <!-- Resources that are the same but have multiple verbs can have multiple method items in the WADL. -->
             <!-- Methods should each have a unique id. -->
             <!-- The attribute displayName can be used to control the name that appears in the list in the Console. -->
-            <method id="self-info-brief" name="GET" apigee:displayName="Self Info">
+            <method id="get-self-info-brief" name="GET" apigee:displayName="Get Self Info">
 
                 <!-- Tags are used to organize the list of methods. Primary tag will list the default placement. -->
                 <apigee:tags>
-                    <apigee:tag primary="true">User</apigee:tag>
+                    <apigee:tag primary="true">User Resources</apigee:tag>
                 </apigee:tags>
 
                 <!-- Is authentication required for this method? -->
@@ -26,6 +24,26 @@
                 <doc apigee:url="https://developer.gitter.im/docs/user-resource">
                     Get information about current authenticated user.
                 </doc>
+            </method>
+        </resource>
+
+        <resource path="/groups/{groupId}/rooms">
+            <method id="get-group-rooms" name="GET" apigee:displayName="Get All Group Rooms">
+                <apigee:tags>
+                    <apigee:tag primary="true">Group Resources</apigee:tag>
+                </apigee:tags>
+                <apigee:authentication required="true"/>
+                <doc>Display all rooms in the given group id.</doc>
+                <request>
+                    <param style="template" name="groupId" type="xsd:string" required="true" default="">
+                        <doc>Group ID - get by querying /groups</doc>
+                    </param>
+                    <param style="query" name="type" type="xsd:string" required="false" default="">
+                        <doc>Show only the rooms admin of.</doc>
+                        <option value=""/>
+                        <option value="admin"/>
+                    </param>
+                </request>
             </method>
         </resource>
     </resources>
