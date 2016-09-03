@@ -98,12 +98,12 @@
                 <request>
                     <param name="q" style="query" type="xsd:string" required="false"
                         default="gitterHQ">
-                        <doc>Search for rooms across Gitter.</doc>
+                        <doc>Search query for rooms across Gitter.</doc>
                     </param>
                     <param name="limit" style="query" type="xsd:positiveInteger" required="false"
                         default="10">
-                        <doc>Limit the number of results while using search query. (constrained to
-                            100 or less)</doc>
+                        <doc>Limit the number of results while querying. (constrained to 100 or
+                            less)</doc>
                     </param>
                 </request>
             </method>
@@ -145,7 +145,7 @@
                     >Response accepted type</doc>
             </param>
             <param style="template" name="user_id" type="xsd:string" required="true" default="">
-                <doc>User ID maybe retrieved using `/user/me` or `/user`.</doc>
+                <doc>User ID maybe retrieved using `/user/me`.</doc>
             </param>
 
             <!-- Join Room -->
@@ -200,11 +200,11 @@
                     `/rooms`.</doc>
                 <request>
                     <param name="q" required="false" style="query" type="xsd:string" default="">
-                        <doc>Search query</doc>
+                        <doc>Search query for a room user.</doc>
                     </param>
                     <param name="skip" required="false" style="query" type="xsd:positiveInteger"
                         default="100">
-                        <doc>Skip n users</doc>
+                        <doc>Skip n users.</doc>
                     </param>
                     <param name="limit" required="false" style="query" type="xsd:positiveInteger"
                         default="30">
@@ -269,15 +269,15 @@
                     ID maybe retrieved using show room info using `/rooms`. </doc>
             </param>
 
-            <!-- Update Room -->
+            <!-- Update Room topic/search engine index/tags selectively -->
             <method id="update-room" name="PUT" apigee:displayName="Update Room">
                 <apigee:tags>
                     <apigee:tag primary="true">Rooms Resource</apigee:tag>
                 </apigee:tags>
                 <apigee:authentication required="true"/>
                 <doc apigee:url="https://developer.gitter.im/docs/rooms-resource#update-room">
-                    Update a room by ID. Room ID maybe retrieved using show room info using
-                    `/rooms`.</doc>
+                    Update Room topic/search engine index/tags selectively. Room ID maybe retrieved
+                    using show room info using `/rooms`.</doc>
                 <request>
                     <representation mediaType="application/json">
                         <apigee:payload required="true">
@@ -302,6 +302,263 @@
                 <doc apigee:url="https://developer.gitter.im/docs/rooms-resource#delete-a-room">
                     Delete a room by ID. Room ID maybe retrieved using show room info using
                     `/rooms`.</doc>
+            </method>
+        </resource>
+
+        <resource path="/rooms/{room_id}/issues">
+            <param required="true" type="xsd:string" name="Content-Type" style="header"
+                default="application/json">
+                <doc
+                    apigee:url="https://developer.gitter.im/docs/rest-api#structure-of-an-api-request"
+                    >Request content type</doc>
+            </param>
+            <param required="true" type="xsd:string" name="Accept" style="header"
+                default="application/json">
+                <doc
+                    apigee:url="https://developer.gitter.im/docs/rest-api#structure-of-an-api-request"
+                    >Response accepted type</doc>
+            </param>
+            <param required="true" name="room_id" style="template" default="">
+                <doc apigee:url="https://developer.gitter.im/docs/rooms-resource#join-a-room"> Room
+                    ID maybe retrieved using show room info using `/rooms`. </doc>
+            </param>
+
+            <!-- Show room issues -->
+            <!-- INCOMPLETE / TODO - Purpose of /issues -->
+            <method id="show-issues" name="GET" apigee:displayName="Show Issues">
+                <!--
+                <apigee:tags>
+                    <apigee:tag primary="false">Rooms Resource</apigee:tag>
+                </apigee:tags>
+                -->
+                <apigee:authentication required="true"/>
+                <doc apigee:url="https://developer.gitter.im/docs/rooms-resource#delete-a-room">
+                    Show room issues. Room ID maybe retrieved using show room info using
+                    `/rooms`.</doc>
+            </method>
+        </resource>
+
+        <resource path="/rooms/{room_id}/bans">
+            <param required="true" type="xsd:string" name="Content-Type" style="header"
+                default="application/json">
+                <doc
+                    apigee:url="https://developer.gitter.im/docs/rest-api#structure-of-an-api-request"
+                    >Request content type</doc>
+            </param>
+            <param required="true" type="xsd:string" name="Accept" style="header"
+                default="application/json">
+                <doc
+                    apigee:url="https://developer.gitter.im/docs/rest-api#structure-of-an-api-request"
+                    >Response accepted type</doc>
+            </param>
+            <param required="true" name="room_id" style="template" default="">
+                <doc apigee:url="https://developer.gitter.im/docs/rooms-resource#join-a-room"> Room
+                    ID maybe retrieved using show room info using `/rooms`. </doc>
+            </param>
+
+            <!-- Ban List -->
+            <method name="GET" apigee:displayName="Ban List" id="ban-list">
+                <apigee:tags>
+                    <apigee:tag primary="true">Rooms Resource</apigee:tag>
+                </apigee:tags>
+                <apigee:authentication required="true"/>
+                <doc apigee:url="https://developer.gitter.im/docs/rooms-resource"> List of banned
+                    users. Room ID maybe retrieved using show room info using `/rooms`.</doc>
+            </method>
+
+            <!-- Ban User -->
+            <method name="POST" apigee:displayName="Ban User" id="ban-user">
+                <apigee:tags>
+                    <apigee:tag primary="true">Rooms Resource</apigee:tag>
+                </apigee:tags>
+                <apigee:authentication required="true"/>
+                <doc apigee:url="https://developer.gitter.im/docs/rooms-resource"> Ban a user. Room
+                    ID maybe retrieved using show room info using `/rooms`.</doc>
+                <request>
+                    <representation mediaType="application/json">
+                        <apigee:payload required="true">
+                            <apigee:content><![CDATA[
+                                {
+                                    "username": ""
+                                }
+                            ]]></apigee:content>
+                        </apigee:payload>
+                    </representation>
+                </request>
+            </method>
+        </resource>
+
+        <resource path="/rooms/{room_id}/bans/{username}">
+            <param required="true" type="xsd:string" name="Content-Type" style="header"
+                default="application/json">
+                <doc
+                    apigee:url="https://developer.gitter.im/docs/rest-api#structure-of-an-api-request"
+                    >Request content type</doc>
+            </param>
+            <param required="true" type="xsd:string" name="Accept" style="header"
+                default="application/json">
+                <doc
+                    apigee:url="https://developer.gitter.im/docs/rest-api#structure-of-an-api-request"
+                    >Response accepted type</doc>
+            </param>
+            <param required="true" name="room_id" style="template" default="">
+                <doc apigee:url="https://developer.gitter.im/docs/rooms-resource#join-a-room"> Room
+                    ID maybe retrieved using show room info using `/rooms`. </doc>
+            </param>
+            <param required="true" name="username" style="template" default="">
+                <doc> Username to unban. </doc>
+            </param>
+
+            <!-- Unban User -->
+            <method name="DELETE" apigee:displayName="Unban User" id="unban-user">
+                <apigee:tags>
+                    <apigee:tag primary="true">Rooms Resource</apigee:tag>
+                </apigee:tags>
+                <apigee:authentication required="true"/>
+                <doc apigee:url="https://developer.gitter.im/docs/rooms-resource"> Unban a user.
+                    Room ID maybe retrieved using show room info using `/rooms`.</doc>
+            </method>
+        </resource>
+
+        <resource path="/rooms/{room_id}/collaborators">
+            <param required="true" type="xsd:string" name="Content-Type" style="header"
+                default="application/json">
+                <doc
+                    apigee:url="https://developer.gitter.im/docs/rest-api#structure-of-an-api-request"
+                    >Request content type</doc>
+            </param>
+            <param required="true" type="xsd:string" name="Accept" style="header"
+                default="application/json">
+                <doc
+                    apigee:url="https://developer.gitter.im/docs/rest-api#structure-of-an-api-request"
+                    >Response accepted type</doc>
+            </param>
+            <param required="true" name="room_id" style="template" default="">
+                <doc apigee:url="https://developer.gitter.im/docs/rooms-resource#join-a-room"> Room
+                    ID maybe retrieved using show room info using `/rooms`. </doc>
+            </param>
+
+            <!-- List Collaborators -->
+            <!-- INCOMPLETE / TODO - doc -->
+            <method name="GET" apigee:displayName="List Collaborators" id="list-collaborators">
+                <apigee:tags>
+                    <apigee:tag primary="true">Rooms Resource</apigee:tag>
+                </apigee:tags>
+                <apigee:authentication required="true"/>
+                <doc apigee:url="https://developer.gitter.im/docs/rooms-resource"> List of
+                    collaborators of the organisation. Room ID maybe retrieved using show room info
+                    using `/rooms`.</doc>
+            </method>
+        </resource>
+
+        <resource path="/rooms/{room_id}/suggestedRooms">
+            <param required="true" type="xsd:string" name="Content-Type" style="header"
+                default="application/json">
+                <doc
+                    apigee:url="https://developer.gitter.im/docs/rest-api#structure-of-an-api-request"
+                    >Request content type</doc>
+            </param>
+            <param required="true" type="xsd:string" name="Accept" style="header"
+                default="application/json">
+                <doc
+                    apigee:url="https://developer.gitter.im/docs/rest-api#structure-of-an-api-request"
+                    >Response accepted type</doc>
+            </param>
+            <param required="true" name="room_id" style="template" default="">
+                <doc apigee:url="https://developer.gitter.im/docs/rooms-resource#join-a-room"> Room
+                    ID maybe retrieved using show room info using `/rooms`. </doc>
+            </param>
+
+            <!-- Suggested Rooms -->
+            <method name="GET" apigee:displayName="Suggested Rooms" id="suggested-rooms">
+                <apigee:tags>
+                    <apigee:tag primary="true">Rooms Resource</apigee:tag>
+                </apigee:tags>
+                <apigee:authentication required="true"/>
+                <doc apigee:url="https://developer.gitter.im/docs/rooms-resource"> Suggested rooms
+                    related to the given room ID. Room ID maybe retrieved using show room info using
+                    `/rooms`.</doc>
+            </method>
+        </resource>
+
+        <resource path="/rooms/{room_id}/events">
+            <param required="true" type="xsd:string" name="Content-Type" style="header"
+                default="application/json">
+                <doc
+                    apigee:url="https://developer.gitter.im/docs/rest-api#structure-of-an-api-request"
+                    >Request content type</doc>
+            </param>
+            <param required="true" type="xsd:string" name="Accept" style="header"
+                default="application/json">
+                <doc
+                    apigee:url="https://developer.gitter.im/docs/rest-api#structure-of-an-api-request"
+                    >Response accepted type</doc>
+            </param>
+            <param required="true" name="room_id" style="template" default="">
+                <doc apigee:url="https://developer.gitter.im/docs/rooms-resource#join-a-room"> Room
+                    ID maybe retrieved using show room info using `/rooms`. </doc>
+            </param>
+
+            <!-- Room Events -->
+            <method name="GET" apigee:displayName="Room Events" id="room-events">
+                <apigee:tags>
+                    <apigee:tag primary="true">Rooms Resource</apigee:tag>
+                </apigee:tags>
+                <apigee:authentication required="true"/>
+                <doc apigee:url="https://developer.gitter.im/docs/rooms-resource"> List detailed
+                    room events. Room ID maybe retrieved using show room info using `/rooms`.</doc>
+            </method>
+        </resource>
+
+        <resource path="/rooms/{room_id}/meta/welcome-message">
+            <param required="true" type="xsd:string" name="Content-Type" style="header"
+                default="application/json">
+                <doc
+                    apigee:url="https://developer.gitter.im/docs/rest-api#structure-of-an-api-request"
+                    >Request content type</doc>
+            </param>
+            <param required="true" type="xsd:string" name="Accept" style="header"
+                default="application/json">
+                <doc
+                    apigee:url="https://developer.gitter.im/docs/rest-api#structure-of-an-api-request"
+                    >Response accepted type</doc>
+            </param>
+            <param required="true" name="room_id" style="template" default="">
+                <doc apigee:url="https://developer.gitter.im/docs/rooms-resource#join-a-room"> Room
+                    ID maybe retrieved using show room info using `/rooms`. </doc>
+            </param>
+
+            <!-- Show Welcome Message -->
+            <method name="GET" apigee:displayName="Show Welcome Message" id="show-welcome-message">
+                <apigee:tags>
+                    <apigee:tag primary="true">Rooms Resource</apigee:tag>
+                </apigee:tags>
+                <apigee:authentication required="true"/>
+                <doc apigee:url="https://developer.gitter.im/docs/rooms-resource"> Show welcome
+                    message of the room. Room ID maybe retrieved using show room info using
+                    `/rooms`.</doc>
+            </method>
+
+            <!-- Set Welcome Message -->
+            <method name="PUT" apigee:displayName="Set Welcome Message" id="set-welcome-message">
+                <apigee:tags>
+                    <apigee:tag primary="true">Rooms Resource</apigee:tag>
+                </apigee:tags>
+                <apigee:authentication required="true"/>
+                <doc apigee:url="https://developer.gitter.im/docs/rooms-resource"> Modify welcome
+                    message of the room. Room ID maybe retrieved using show room info using
+                    `/rooms`.</doc>
+                <request>
+                    <representation mediaType="application/json">
+                        <apigee:payload required="true">
+                            <apigee:content><![CDATA[
+                                {
+                                    "welcomeMessage": "# Welcome\n\nHello"
+                                }
+                            ]]></apigee:content>
+                        </apigee:payload>
+                    </representation>
+                </request>
             </method>
         </resource>
 
@@ -357,9 +614,17 @@
                         default="30">
                         <doc>Maximum number of messages to return (constrained to 100 or less)</doc>
                     </param>
-                    <param name="q" style="query" type="xsd:string" required="false"
-                        default="gitterHQ">
-                        <doc>Search query</doc>
+                    <param name="q" style="query" type="xsd:string" required="false" default="Hi">
+                        <doc>Search query for text in message. Use from:@username to limit the
+                            result to messages send by the given username.</doc>
+                    </param>
+                    <param name="lang" style="query" type="xsd:string" required="false" default="en">
+                        <doc>Language code</doc>
+                    </param>
+                    <param name="lean" style="query" type="xsd:boolean" required="false"
+                        default="false">
+                        <doc>Show plain objects if `true` (performant) else show full
+                            document.</doc>
                     </param>
                 </request>
             </method>
@@ -453,32 +718,6 @@
              User Resource
              ============= -->
 
-        <resource path="/user">
-            <param required="true" type="xsd:string" name="Content-Type" style="header"
-                default="application/json">
-                <doc
-                    apigee:url="https://developer.gitter.im/docs/rest-api#structure-of-an-api-request"
-                    >Request content type</doc>
-            </param>
-            <param required="true" type="xsd:string" name="Accept" style="header"
-                default="application/json">
-                <doc
-                    apigee:url="https://developer.gitter.im/docs/rest-api#structure-of-an-api-request"
-                    >Response accepted type</doc>
-            </param>
-
-            <!-- Current User -->
-            <method id="current-user" apigee:displayName="Current User" name="GET">
-                <apigee:tags>
-                    <apigee:tag primary="true">User Resource</apigee:tag>
-                </apigee:tags>
-                <apigee:authentication required="true"/>
-                <doc
-                    apigee:url="https://developer.gitter.im/docs/user-resource#get-the-current-user"
-                    > Get current authenticated user. </doc>
-            </method>
-        </resource>
-
         <resource path="/user/{user_id}/rooms">
             <param required="true" type="xsd:string" name="Content-Type" style="header"
                 default="application/json">
@@ -493,7 +732,7 @@
                     >Response accepted type</doc>
             </param>
             <param style="template" name="user_id" type="xsd:string" required="true" default="">
-                <doc>User ID maybe retrieved using `/user/me` or `/user`.</doc>
+                <doc>User ID maybe retrieved using `/user/me`.</doc>
             </param>
 
             <!-- User Rooms -->
@@ -522,7 +761,7 @@
                     >Response accepted type</doc>
             </param>
             <param style="template" name="user_id" type="xsd:string" required="true" default="">
-                <doc>User ID maybe retrieved using `/user/me` or `/user`.</doc>
+                <doc>User ID maybe retrieved using `/user/me`.</doc>
             </param>
             <param required="true" name="room_id" style="template" default="">
                 <doc apigee:url="https://developer.gitter.im/docs/rooms-resource#join-a-room"> Room
@@ -580,7 +819,7 @@
                     >Response accepted type</doc>
             </param>
             <param style="template" name="user_id" type="xsd:string" required="true" default="">
-                <doc>User ID maybe retrieved using `/user/me` or `/user`.</doc>
+                <doc>User ID maybe retrieved using `/user/me`.</doc>
             </param>
 
             <!-- List Orgs -->
@@ -608,7 +847,7 @@
                     >Response accepted type</doc>
             </param>
             <param style="template" name="user_id" type="xsd:string" required="true" default="">
-                <doc>User ID maybe retrieved using `/user/me` or `/user`.</doc>
+                <doc>User ID maybe retrieved using `/user/me`.</doc>
             </param>
 
             <!-- List Repos -->
@@ -619,6 +858,56 @@
                 <apigee:authentication required="true"/>
                 <doc apigee:url="https://developer.gitter.im/docs/user-resource#repos"> List of the
                     user's GitHub Repositories and their respective Room if available.. </doc>
+                <request>
+                    <param name="q" style="query" type="xsd:string" required="false"
+                        default="gitterHQ">
+                        <doc>Search query for finding repositories.</doc>
+                    </param>
+                    <param name="limit" style="query" type="xsd:positiveInteger" required="false"
+                        default="10">
+                        <doc>Limit the number of results. (constrained to 100 or less)</doc>
+                    </param>
+                </request>
+            </method>
+        </resource>
+
+        <resource path="/user">
+            <param required="true" type="xsd:string" name="Content-Type" style="header"
+                default="application/json">
+                <doc
+                    apigee:url="https://developer.gitter.im/docs/rest-api#structure-of-an-api-request"
+                    >Request content type</doc>
+            </param>
+            <param required="true" type="xsd:string" name="Accept" style="header"
+                default="application/json">
+                <doc
+                    apigee:url="https://developer.gitter.im/docs/rest-api#structure-of-an-api-request"
+                    >Response accepted type</doc>
+            </param>
+
+            <!-- User -->
+            <method id="user" apigee:displayName="User" name="GET">
+                <apigee:tags>
+                    <apigee:tag primary="true">User Resource</apigee:tag>
+                </apigee:tags>
+                <apigee:authentication required="true"/>
+                <doc
+                    apigee:url="https://developer.gitter.im/docs/user-resource#get-the-current-user"
+                    > Get current authenticated user. </doc>
+                <request>
+                    <param name="q" style="query" type="xsd:string" required="false"
+                        default="MadLittleMods">
+                        <doc>Search query a username.</doc>
+                    </param>
+                    <param name="limit" style="query" type="xsd:positiveInteger" required="false"
+                        default="10">
+                        <doc>Limit the number of results. (constrained to 130 or less)</doc>
+                    </param>
+                    <param name="skip" required="false" style="query" type="xsd:positiveInteger"
+                        default="100">
+                        <doc>Skip n results</doc>
+                    </param>
+                </request>
             </method>
         </resource>
 
